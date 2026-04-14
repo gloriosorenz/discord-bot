@@ -127,8 +127,6 @@ client.on("messageCreate", async (message) => {
     const text = await res.text();
     console.log("📊 Sheets response:", text);
 
-    Logger.log(JSON.stringify(e));
-
     message.reply(`✅ Logged successfully for **${payload.branch}** (${payload.date})`);
   } catch (err) {
     console.error(err);
