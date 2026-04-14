@@ -21,6 +21,7 @@ function doPost(e) {
   const expenses = parts[3] || 0;
 
   // Save to sheet
+
   sheet.appendRow([date, branch, sales, expenses]);
 
   return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(
