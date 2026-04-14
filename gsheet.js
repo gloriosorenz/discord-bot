@@ -1,4 +1,4 @@
-// 🔧 CONFIG
+// 🔧 CONFIG 123
 const SHEET_NAME = "Sheet10";
 
 // 🚀 This receives data from Discord
