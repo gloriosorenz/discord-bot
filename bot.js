@@ -62,6 +62,8 @@ client.on("ready", () => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   if (!message.content.startsWith("!log")) return;
+  // Only listen to specific channel
+  if (message.channel.name !== CHANNEL_NAME) return;
 
   try {
     const lines = message.content.split("\n");
