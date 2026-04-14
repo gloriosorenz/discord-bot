@@ -24,41 +24,6 @@ client.on("ready", () => {
   //   console.log("WEB_APP_URL:", WEB_APP_URL);
 });
 
-// client.on("messageCreate", async (message) => {
-//   // Log incoming message
-//   console.log("MESSAGE RECEIVED:", message.content);
-
-//   // Ignore bots
-//   if (message.author.bot) return;
-
-//   // Only listen to specific channel
-//   if (message.channel.name !== CHANNEL_NAME) return;
-
-//   const content = message.content;
-
-//   console.log("SENDING TO:", WEB_APP_URL);
-
-//   try {
-//     await fetch(WEB_APP_URL, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         content: content,
-//       }),
-//     });
-
-//     // ✅ Feedback in Discord
-//     // message.react("✅");
-//     message.reply("📊 Logged to system!");
-//   } catch (error) {
-//     console.error(error);
-//     // message.react("❌");
-//     message.reply("❌ Failed to log to system!");
-//   }
-// });
-
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
