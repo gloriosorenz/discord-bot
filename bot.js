@@ -61,9 +61,8 @@ client.on("ready", () => {
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+
   if (!message.content.startsWith("!log")) return;
-  // Only listen to specific channel
-  if (message.channel.name !== CHANNEL_NAME) return;
 
   try {
     const lines = message.content.split("\n");
@@ -77,50 +76,46 @@ client.on("messageCreate", async (message) => {
 
       const value = rest.join(":").trim();
 
-      // normalize key (lowercase, remove spaces)
-      const cleanKey = key.toLowerCase().replace(/\s+/g, "_");
-
+      // normalize keys
+      const cleanKey = key.toLowerCase().trim();
       data[cleanKey] = value;
     });
 
-    // 🧠 Helper: clean numbers (remove commas/spaces)
+    // 🧠 number cleaner
     const parseNumber = (val) => {
       if (!val) return 0;
-      return Number(val.replace(/,/g, "").trim()) || 0;
+      return Number(val.toString().replace(/,/g, "").trim()) || 0;
     };
 
-    // Extract fields
-    const date = data["date"] || new Date().toISOString().split("T")[0];
-    const branch = data["branch"] || "Unknown";
-
+    // 📦 BUILD PAYLOAD
     const payload = {
-      date,
-      branch,
+      date: data["date"],
+      branch: data["branch"],
 
-      shift1_cash_count: parseNumber(data["ist_shift_cash_count"]),
-      cutoff: parseNumber(data["cut_off"]),
-      shift1_dan_eric: parseNumber(data["1st_shift_dan_eric"]),
-      shift1_expense: parseNumber(data["1st_shift_expense"]),
-      shift1_discrepancy: parseNumber(data["1st_shift_discrepancy"]),
-      shift1_cashier: data["1st_shift_cashier"] || "",
+      s1_cash: parseNumber(data["s1_cash"]),
+      cutoff: parseNumber(data["cutoff"]),
+      s1_dan_eric: parseNumber(data["s1_dan_eric"]),
+      s1_donut: parseNumber(data["s1_donut"]),
+      s1_exp: parseNumber(data["s1_exp"]),
+      s1_disc: parseNumber(data["s1_disc"]),
+      s1_cashier: data["s1_cashier"] || "",
 
-      shift2_cash_count: parseNumber(data["2nd_shift_cash_count"]),
-      shift2_donut: parseNumber(data["2nd_shift_donut"]),
-      shift2_dan_eric: parseNumber(data["2nd_shift_dan_eric"]),
-      shift2_expense: parseNumber(data["2nd_shift_expenses"]),
-      shift2_discrepancy: parseNumber(data["2nd_shift_discrepancy"]),
-      shift2_cashier: data["2nd_shift_cashier"] || "",
+      s2_cash: parseNumber(data["s2_cash"]),
+      s2_donut: parseNumber(data["s2_donut"]),
+      s2_dan_eric: parseNumber(data["s2_dan_eric"]),
+      s2_exp: parseNumber(data["s2_exp"]),
+      s2_disc: parseNumber(data["s2_disc"]),
+      s2_cashier: data["s2_cashier"] || "",
 
-      gross_sales: parseNumber(data["gross_sales"]),
-      net_sales: parseNumber(data["net_sales"]),
+      gross: parseNumber(data["gross"]),
+      net: parseNumber(data["net"]),
       po: data["po"] || "",
       lo: data["lo"] || "",
       salary: parseNumber(data["salary"]),
     };
 
-    console.log("Parsed data:", payload);
+    console.log("📦 FINAL PAYLOAD:", payload);
 
-    // Send to Apps Script
     const res = await fetch(WEB_APP_URL, {
       method: "POST",
       headers: {
@@ -130,12 +125,12 @@ client.on("messageCreate", async (message) => {
     });
 
     const text = await res.text();
-    console.log("Sheets response:", text);
+    console.log("📊 Sheets response:", text);
 
-    message.reply(`✅ Full report logged for ${branch} (${date})`);
+    message.reply(`✅ Logged successfully for **${payload.branch}** (${payload.date})`);
   } catch (err) {
     console.error(err);
-    message.reply("❌ Failed to log report. Check format.");
+    message.reply("❌ Failed to log report.");
   }
 });
 
