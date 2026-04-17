@@ -1,30 +1,64 @@
-// 🔧 CONFIG 123
 const SHEET_NAME = "Sheet10";
 
-// 🚀 This receives data from Discord
 function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
 
-  // Parse incoming JSON
-  const data = JSON.parse(e.postData.contents);
+    // Get all gsheets name
+    Logger.log("Available sheets:");
+    SpreadsheetApp.getActiveSpreadsheet()
+      .getSheets()
+      .forEach((s) => Logger.log("- " + s.getName()));
 
-  // Example: message content from Discord
-  const content = data.content || "No message";
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error("No POST body received");
+    }
 
-  // 🧾 OPTIONAL: parse structured message
-  // Example format: "2026-04-14 | Branch A | 5000 | 2000"
-  const parts = content.split("|").map((p) => p.trim());
+    // 🚨 DEBUG RAW REQUEST FIRST
+    Logger.log("RAW BODY: " + e.postData.contents);
 
-  const date = parts[0] || new Date();
-  const branch = parts[1] || "Unknown";
-  const sales = parts[2] || 0;
-  const expenses = parts[3] || 0;
+    // ✅ PARSE JSON PROPERLY
+    const data = JSON.parse(e.postData.contents);
 
-  // Save to sheet
+    Logger.log("PARSED DATA: " + JSON.stringify(data));
 
-  sheet.appendRow([date, branch, sales, expenses]);
+    sheet.appendRow([
+      data.date || "No date",
+      data.branch || "Unknown",
 
-  return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(
-    ContentService.MimeType.JSON,
-  );
+      data.s1_cash || 0,
+      data.cutoff || 0,
+      data.s1_dan_eric || 0,
+      data.s1_donut || 0,
+      data.s1_exp || 0,
+      data.s1_disc || 0,
+      data.s1_cashier || "",
+
+      data.s2_cash || 0,
+      data.s2_donut || 0,
+      data.s2_dan_eric || 0,
+      data.s2_exp || 0,
+      data.s2_disc || 0,
+      data.s2_cashier || "",
+
+      data.gross || 0,
+      data.net || 0,
+      data.po || "",
+      data.lo || "",
+      data.salary || 0,
+    ]);
+
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(
+      ContentService.MimeType.JSON,
+    );
+  } catch (err) {
+    Logger.log("ERROR: " + err.toString());
+
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: err.toString(),
+      }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
 }

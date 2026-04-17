@@ -92,7 +92,29 @@ client.on("messageCreate", async (message) => {
     const text = await res.text();
     console.log("📊 Sheets response:", text);
 
-    message.reply(`✅ Logged successfully for **${payload.branch}** (${payload.date})`);
+    message.reply(`✅ Logged successfully for **${payload.branch}** (${payload.date})
+        \n
+        s1_cash: ${payload.s1_cash}
+        cutoff: ${payload.cutoff}
+        s1_dan_eric: ${payload.s1_dan_eric}
+        s1_donut: ${payload.s1_donut}
+        s1_exp: ${payload.s1_exp}
+        s1_disc: ${payload.s1_disc}
+        s1_cashier: ${payload.s1_cashier}
+
+        s2_cash: ${payload.s2_cash}
+        s2_donut: ${payload.s2_donut}
+        s2_dan_eric: ${payload.s2_dan_eric}
+        s2_exp: ${payload.s2_exp}
+        s2_disc: ${payload.s2_disc}
+        s2_cashier: ${payload.s2_cashier}
+
+        gross: ${payload.gross}
+        net: ${payload.net}
+        po: ${payload.po}
+        lo: ${payload.lo}
+        salary: ${payload.salary} 
+        `);
   } catch (err) {
     console.error(err);
     message.reply("❌ Failed to log report.");
