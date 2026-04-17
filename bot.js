@@ -93,7 +93,7 @@ client.on("messageCreate", async (message) => {
     console.log("📊 Sheets response:", text);
 
     message.reply(`✅ Logged successfully for **${payload.branch}** (${payload.date})
-        \n
+        
         s1_cash: ${payload.s1_cash}
         cutoff: ${payload.cutoff}
         s1_dan_eric: ${payload.s1_dan_eric}
